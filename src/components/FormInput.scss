@@ -1,0 +1,23 @@
+@import '../styles/styles.scss';
+
+.formInput {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    .formInputLabel{
+        height: $label-height;
+    }
+
+    input{
+        padding: 15px;
+        margin: 10px;
+    }
+}
+
+
+.error {
+    color: red;
+    position: relative;
+}

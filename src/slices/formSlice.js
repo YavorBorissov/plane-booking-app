@@ -1,24 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const initialState =  {
+  firstName: '',
+  lastName: '',
+  departureAirport: '',
+  destinationAirport: '',
+  departureDate: '',
+  dateOfReturn: '',
+};
+
 const formSlice = createSlice({
   name: 'form',
-  initialState: {
-    // Define initial state for form data here
-    firstName: '',
-    lastName: '',
-    departureAirport: '',
-    destinationAirport: '',
-    departureDate: '',
-    returnDate: '',
-  },
+  initialState,
   reducers: {
     updateForm: (state, action) => {
-      // Update form state based on action payload
       return { ...state, ...action.payload };
     },
-    // Add other form-related reducers as needed
+    resetForm: () => initialState,
   },
 });
 
-export const { updateForm } = formSlice.actions;
+export const { updateForm, resetForm } = formSlice.actions;
 export default formSlice.reducer;

@@ -71,7 +71,7 @@ const Form = () => {
     if (new Date(data.departureDate) > new Date(data.dateOfReturn)) {
       errors.dateOfReturn = "You can't travel back in time :)";
     }
-
+    //TODO: Fix date cannot be today error
     if (new Date() > new Date(data.departureDate)) {
       errors.departureDate = "Date is invalid";
     }

@@ -1,72 +1,127 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { resetForm, updateForm } from "../slices/formSlice";
+import { resetForm, selectForm, updateForm } from "../slices/formSlice";
 import {
   setValidationError,
   clearValidationError,
+  selectValidationErrors,
 } from "../slices/validationSlice";
 import FormInput from "./FormInput";
 import "./Form.scss";
+import { selectAirports } from "../slices/airportsSlice";
+import FormSelect from "./FormSelect";
+import { createBooking } from "../actions/createBooking";
 
 const Form = () => {
   const dispatch = useDispatch();
 
-  const formData = useSelector((state) => state.form);
-  const validationErrors = useSelector((state) => state.validation);
+  const formData = useSelector(selectForm);
+  const validationErrors = useSelector(selectValidationErrors);
+  const airports = useSelector(selectAirports);
 
-  console.log(formData);
+  const handleInputChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+      dispatch(updateForm({ [name]: value }));
+      dispatch(clearValidationError({ fieldName: name }));
+    },
+    [dispatch]
+  );
 
-    dispatch(updateForm({ [name]: value }));
-    dispatch(clearValidationError({ fieldName: name }));
-  };
+  const handleSelectChange = useCallback(
+    ({ name, value }) => {
+      dispatch(updateForm({ [name]: value }));
+      dispatch(clearValidationError({ fieldName: name }));
+    },
+    [dispatch]
+  );
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const validationErrors = validateForm(formData);
-
-    if (Object.keys(validationErrors).length === 0) {
-      // Handle form submission, e.g., make an API call
-      // dispatch(resetForm());
-    } else {
-      Object.entries(validationErrors).forEach(([fieldName, errorMessage]) => {
-        dispatch(setValidationError({ fieldName, errorMessage }));
-      });
-    }
-  };
-
-  const validateForm = (data) => {
+  const validateForm = useCallback((data) => {
     const errors = {};
 
     if (!data.firstName.trim()) {
-      errors.firstName = "First name is required";
+      errors.firstName = "Field is required";
     }
 
     if (!data.lastName.trim()) {
-      errors.lastName = "Last name is required";
+      errors.lastName = "Field required";
     }
 
     if (!data.departureAirport.trim()) {
-      errors.departureAirport = "Departure airport is required";
+      errors.departureAirport = "Field is required";
     }
 
     if (!data.destinationAirport.trim()) {
-      errors.destinationAirport = "Destination airport is required";
+      errors.destinationAirport = "Field is required";
     }
 
     if (!data.departureDate.trim()) {
-      errors.departureDate = "Departure date is required";
+      errors.departureDate = "Field is required";
     }
 
     if (!data.dateOfReturn.trim()) {
-      errors.dateOfReturn = "Date of return is required";
+      errors.dateOfReturn = "Field is required";
+    }
+
+    if (data.departureAirport.trim() === data.destinationAirport.trim()) {
+      errors.destinationAirport = "Departure and destination must be different";
+    }
+
+    if (new Date(data.departureDate) > new Date(data.dateOfReturn)) {
+      errors.dateOfReturn = "You can't travel back in time :)";
+    }
+
+    if (new Date() > new Date(data.departureDate)) {
+      errors.departureDate = "Date is invalid";
     }
 
     return errors;
-  };
+  }, []);
+
+  const getAirportIdFromSelectString = useCallback(
+    (str) => {
+      return airports.find((ap) => ap.code === str.slice(0, 3)).id;
+    },
+    [airports]
+  );
+
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+
+      const validationErrors = validateForm(formData);
+
+      if (Object.keys(validationErrors).length === 0) {
+        const responseData = await dispatch(
+          createBooking({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            departureAirportId: getAirportIdFromSelectString(
+              formData.departureAirport
+            ),
+            arrivalAirportId: getAirportIdFromSelectString(
+              formData.destinationAirport
+            ),
+            departureDate: new Date(formData.departureDate),
+            returnDate: new Date(formData.dateOfReturn),
+          })
+        );
+
+        console.log("Booking created:", responseData.payload);
+
+        dispatch(resetForm());
+      } else {
+        Object.entries(validationErrors).forEach(
+          ([fieldName, errorMessage]) => {
+            dispatch(setValidationError({ fieldName, errorMessage }));
+          }
+        );
+      }
+    },
+    [dispatch, formData, getAirportIdFromSelectString, validateForm]
+  );
+
   return (
     <div>
       <h2>Booking Form</h2>
@@ -79,7 +134,7 @@ const Form = () => {
             placeHolder="First name"
             label="First name:"
             value={formData.firstName}
-            onChange={handleChange}
+            onChange={handleInputChange}
             error={validationErrors.firstName}
           />
           <FormInput
@@ -89,27 +144,31 @@ const Form = () => {
             placeHolder="Last name"
             label="Last name:"
             value={formData.lastName}
-            onChange={handleChange}
+            onChange={handleInputChange}
             error={validationErrors.lastName}
           />
-          <FormInput
+          <FormSelect
             name="departureAirport"
-            type="text"
             id="departureAirport"
             placeHolder="Departure airport"
             label="Departure airport:"
             value={formData.departureAirport}
-            onChange={handleChange}
+            values={airports.map(
+              (airport) => `${airport.code} | ${airport.title}`
+            )}
+            onChange={handleSelectChange}
             error={validationErrors.departureAirport}
           />
-          <FormInput
+          <FormSelect
             name="destinationAirport"
-            type="text"
             id="destinationAirport"
             placeHolder="Destination airport"
             label="Destination airport:"
             value={formData.destinationAirport}
-            onChange={handleChange}
+            values={airports.map(
+              (airport) => `${airport.code} | ${airport.title}`
+            )}
+            onChange={handleSelectChange}
             error={validationErrors.destinationAirport}
           />
           <FormInput
@@ -119,7 +178,7 @@ const Form = () => {
             placeHolder="Departure date"
             label="Departure date:"
             value={formData.departureDate}
-            onChange={handleChange}
+            onChange={handleInputChange}
             error={validationErrors.departureDate}
           />
           <FormInput
@@ -129,7 +188,7 @@ const Form = () => {
             placeHolder="Date of return"
             label="Date of return:"
             value={formData.dateOfReturn}
-            onChange={handleChange}
+            onChange={handleInputChange}
             error={validationErrors.dateOfReturn}
           />
 

@@ -1,12 +1,12 @@
 @import '../styles/styles.scss';
 
-.formInput {
+.formField {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
 
-    .formInputLabel{
+    .formFieldLabel{
         height: $label-height;
     }
 
@@ -14,10 +14,18 @@
         padding: 15px;
         margin: 10px;
     }
+
+    select{
+        min-width: 290px;
+        padding: 15px;
+        margin: 10px;
+    }
+
 }
 
 
 .error {
     color: red;
+    font-size: small;
     position: relative;
 }

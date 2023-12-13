@@ -1,4 +1,5 @@
 import { memo } from "react";
+import "./BookingItem.scss";
 
 const BookingItem = (props) => {
   return (
@@ -9,6 +10,7 @@ const BookingItem = (props) => {
       <p>{`Arrival Airport: ${props.arrivalAirport}`}</p>
       <p>{`Departure Date: ${new Date(props.departureDate).toDateString()}`}</p>
       <p>{`Return Date: ${new Date(props.returnDate).toDateString()}`}</p>
+      <button onClick={() => props.onRemove(props.id)}>Remove</button>
     </div>
   );
 };

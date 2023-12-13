@@ -3,7 +3,7 @@ import { API_ACCESS_TOKEN, API_BASE_URL } from '../constants/env';
 
 export const createBooking = createAsyncThunk(
   'createBooking',
-  async (bookingData, { dispatch }) => {
+  async (bookingData) => {
     try {
       const queryString = new URLSearchParams({ authToken: API_ACCESS_TOKEN }).toString(); 
       const response =  await fetch(`${API_BASE_URL}/bookings/create?${queryString}`, {

@@ -1,0 +1,29 @@
+@import '../styles/styles.scss';
+
+.formContainer {
+    display: inline-flex;
+    align-items: right;
+    justify-content: right;
+    
+    .form {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .submitButtonContainer{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-end;
+        
+        .submitButton{
+            flex: 1;
+            padding: 15px;
+            margin: 10px;
+            margin-top: calc($label-height + 10px);
+            height: $input-height;
+        }
+    }
+}

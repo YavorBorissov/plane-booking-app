@@ -1,6 +1,6 @@
-import BookingList from "components/BookingList";
-import Form from "components/Form";
+import BookingList from "../components/BookingList";
 import { memo } from "react";
+import Form from "../components/Form";
 
 const HomePage = () => {
   return (

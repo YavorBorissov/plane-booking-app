@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resetForm, selectForm, updateForm } from "../slices/formSlice";
 import {
@@ -11,6 +11,11 @@ import "./Form.scss";
 import { selectAirports } from "../slices/airportsSlice";
 import FormSelect from "./FormSelect";
 import { createBooking } from "../actions/createBooking";
+import {
+  resetBookings,
+  selectBookings,
+  setShouldFetchBookings,
+} from "../slices/bookingsSlice";
 
 const Form = () => {
   const dispatch = useDispatch();
@@ -18,6 +23,12 @@ const Form = () => {
   const formData = useSelector(selectForm);
   const validationErrors = useSelector(selectValidationErrors);
   const airports = useSelector(selectAirports);
+
+  const bookings = useSelector(selectBookings);
+  const shouldFetchBookings = useMemo(
+    () => bookings.shouldFetchBookings,
+    [bookings.shouldFetchBookings]
+  );
 
   const handleInputChange = useCallback(
     (e) => {
@@ -72,7 +83,10 @@ const Form = () => {
       errors.dateOfReturn = "You can't travel back in time :)";
     }
 
-    if (new Date() > new Date(data.departureDate)) {
+    if (
+      new Date().setHours(0, 0, 0, 0) >
+      new Date(data.departureDate).setHours(0, 0, 0, 0)
+    ) {
       errors.departureDate = "Date is invalid";
     }
 
@@ -93,7 +107,7 @@ const Form = () => {
       const validationErrors = validateForm(formData);
 
       if (Object.keys(validationErrors).length === 0) {
-        const responseData = await dispatch(
+        await dispatch(
           createBooking({
             firstName: formData.firstName,
             lastName: formData.lastName,
@@ -108,9 +122,9 @@ const Form = () => {
           })
         );
 
-        console.log("Booking created:", responseData.payload);
-
         dispatch(resetForm());
+        dispatch(resetBookings());
+        dispatch(setShouldFetchBookings(shouldFetchBookings));
       } else {
         Object.entries(validationErrors).forEach(
           ([fieldName, errorMessage]) => {
@@ -119,7 +133,13 @@ const Form = () => {
         );
       }
     },
-    [dispatch, formData, getAirportIdFromSelectString, validateForm]
+    [
+      dispatch,
+      formData,
+      getAirportIdFromSelectString,
+      shouldFetchBookings,
+      validateForm,
+    ]
   );
 
   return (

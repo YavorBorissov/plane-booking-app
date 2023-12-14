@@ -19,6 +19,11 @@
         min-width: 290px;
         padding: 15px;
         margin: 10px;
+
+        @media screen and (max-width: 569px) {
+            min-width: 0px;
+            padding: 15px 0px 15px 15px;
+        }
     }
 
 }

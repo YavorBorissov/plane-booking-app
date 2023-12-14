@@ -1,0 +1,54 @@
+@import '../styles/styles.scss';
+
+.bg-find-booking{
+    color: white;
+    background-color: rgb(42,72,98);
+    text-align: center;
+    box-shadow: 0 0 20px 5px rgba(27, 54, 84, 0.801);
+    border-radius: 20px;
+    padding: 10px 0;
+
+    input{
+        padding: 15px;
+        margin: 10px;
+    }
+
+    h1{
+        margin-bottom: 0;
+    }
+
+    .find-booking-title {
+        margin-bottom: 20px;
+    }
+        
+    .search-container {
+        position: relative;
+        .searchButton{
+            svg{
+                position: absolute;
+                top: 15px;
+            }
+            background: none;
+            border: none;
+            flex: 1;
+            padding: 15px;
+            margin: 10px;
+            height: $input-height;
+            fill: white;
+            transition: fill 0.3s ease;
+            &:hover {
+                cursor: pointer;
+                fill: rgb(169, 175, 182);
+            }
+        }
+    }
+    
+
+    @media screen and (max-width: 719px) {
+        box-shadow: none;
+    }
+
+    @media screen and (max-width: 719px) {
+        border-radius: 0;
+    }
+}

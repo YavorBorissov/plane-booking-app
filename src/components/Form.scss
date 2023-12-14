@@ -1,11 +1,18 @@
 @import '../styles/styles.scss';
 
 .formContainer {
+    text-align: center;
+    background-color: rgba(27, 54, 84, 0.801);
+    position: relative;
+
+    box-shadow: 0 0 50px 60px rgba(27, 54, 84, 0.801);
+
     display: inline-flex;
-    align-items: right;
-    justify-content: right;
+    margin: 0px 0px 100px 0px;
     
     .form {
+        color: white;
+        margin: 30px 30px;
         display: flex;
         align-items: flex-start;
         justify-content: center;
@@ -19,11 +26,27 @@
         justify-content: flex-end;
         
         .submitButton{
+            background: none;
+            border: none;
             flex: 1;
             padding: 15px;
+            padding: 0px;
             margin: 10px;
             margin-top: calc($label-height + 10px);
             height: $input-height;
+            fill: white;
+            transition: fill 0.3s ease;
+            &:hover {
+                cursor: pointer;
+                fill: rgb(169, 175, 182);
+            }
         }
+    }
+
+    @media screen and (max-width: 563px) {
+        background: none;
+        background-color: none;
+        box-shadow: none;
+        margin-bottom: 0px;
     }
 }

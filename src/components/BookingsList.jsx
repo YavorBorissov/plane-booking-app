@@ -10,8 +10,10 @@ import BookingItem from "./BookingItem";
 import { selectAirports } from "../slices/airportsSlice";
 import { debounce } from "../utils/debounce";
 import { removeBooking } from "../actions/removeBooking";
+import "./BookingsList.scss";
+import { findAirportNameById } from "../utils/findAirportNameById";
 
-const BookingList = () => {
+const BookingsList = () => {
   const dispatch = useDispatch();
   const airports = useSelector(selectAirports);
   const bookings = useSelector(selectBookings);
@@ -47,11 +49,6 @@ const BookingList = () => {
     };
   }, [handleScroll]);
 
-  const findAirportNameById = useCallback(
-    (id) => airports.find((a) => a.id === id)?.title || "Unknown Airport",
-    [airports]
-  );
-
   const handleRemoveBooking = useCallback(
     async (bookingId) => {
       try {
@@ -69,23 +66,31 @@ const BookingList = () => {
 
   return (
     <div>
-      <h1>Booking List</h1>
-      {bookings?.bookings?.map((b) => (
-        <BookingItem
-          id={b.id}
-          firstName={b.firstName}
-          lastName={b.lastName}
-          departureAirport={findAirportNameById(b.departureAirportId)}
-          arrivalAirport={findAirportNameById(b.arrivalAirportId)}
-          departureDate={b.departureDate}
-          returnDate={b.returnDate}
-          //TODO: remove all passed functions to handle...
-          onRemove={handleRemoveBooking}
-          key={b.id}
-        />
-      ))}
+      <div className="bg-booking">
+        <h1 className="booking-list-title">Bookings List</h1>
+        {bookings?.bookings ? (
+          bookings?.bookings?.map((b) => (
+            <BookingItem
+              id={b.id}
+              firstName={b.firstName}
+              lastName={b.lastName}
+              departureAirport={findAirportNameById(
+                b.departureAirportId,
+                airports
+              )}
+              arrivalAirport={findAirportNameById(b.arrivalAirportId, airports)}
+              departureDate={b.departureDate}
+              returnDate={b.returnDate}
+              onRemove={handleRemoveBooking}
+              key={b.id}
+            />
+          ))
+        ) : (
+          <h3 className="no-bookings">No bookings</h3>
+        )}
+      </div>
     </div>
   );
 };
 
-export default memo(BookingList);
+export default memo(BookingsList);

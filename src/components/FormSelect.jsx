@@ -19,7 +19,9 @@ const FormSelect = (props) => {
           placeholder={props.placeHolder}
           onChange={handleChange}
         >
-          <option key="" value=""></option>
+          <option value="" disabled hidden>
+            Choose airport
+          </option>
           {props.values.map((value) => (
             <option key={value} value={value}>
               {value}

@@ -1,0 +1,1 @@
+export const findAirportNameById = (id, airports) => airports.find((a) => a.id === id)?.title || "Unknown Airport"

@@ -1,0 +1,40 @@
+.booking-card-search {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: space-between;
+    margin: 20px;
+    padding-bottom: 20px;
+    max-width: 100%;
+    background-color: rgb(212, 234, 255);
+    border-radius: 10px;
+    min-width: 200px;
+    color: black;
+
+    .id-search {
+        margin: 20px;
+
+        h1{
+            text-align: center;
+            font-weight: 1000;
+            padding-top: 0px;
+        }
+    }
+
+    .info-search {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .bolded-info-search {
+            font-weight: 700;;
+        }
+    }
+
+    @media screen and (max-width: 415px) {
+        margin-left: 0;
+        margin-right: 0;
+        border-radius: 0px;
+    }
+}

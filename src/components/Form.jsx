@@ -16,6 +16,7 @@ import {
   selectBookings,
   setShouldFetchBookings,
 } from "../slices/bookingsSlice";
+import GoIcon from "../icons/GoIcon";
 
 const Form = () => {
   const dispatch = useDispatch();
@@ -75,7 +76,10 @@ const Form = () => {
       errors.dateOfReturn = "Field is required";
     }
 
-    if (data.departureAirport.trim() === data.destinationAirport.trim()) {
+    if (
+      data.departureAirport.trim() === data.destinationAirport.trim() &&
+      data.departureAirport.trim() !== ""
+    ) {
       errors.destinationAirport = "Departure and destination must be different";
     }
 
@@ -144,14 +148,13 @@ const Form = () => {
 
   return (
     <div>
-      <h2>Booking Form</h2>
       <div className="formContainer">
         <form onSubmit={handleSubmit} className="form">
           <FormInput
             name="firstName"
             id="firstName"
             type="text"
-            placeHolder="First name"
+            placeHolder="Your first name"
             label="First name:"
             value={formData.firstName}
             onChange={handleInputChange}
@@ -161,7 +164,7 @@ const Form = () => {
             name="lastName"
             type="text"
             id="lastName"
-            placeHolder="Last name"
+            placeHolder="Your last name"
             label="Last name:"
             value={formData.lastName}
             onChange={handleInputChange}
@@ -214,7 +217,7 @@ const Form = () => {
 
           <div className="submitButtonContainer">
             <button type="submit" className="submitButton">
-              Submit
+              <GoIcon />
             </button>
           </div>
         </form>
